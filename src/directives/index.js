@@ -1,6 +1,6 @@
 //定义懒加载插件
 import {useIntersectionObserver} from "@vueuse/core";
-
+//定义完成后需要在main.js注册！！
 export const lazyPlugin={
     install(app){
     //懒加载指令逻辑
