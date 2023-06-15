@@ -3,23 +3,52 @@ import {getDetailApi} from "@/apis/detail";
 import {useRoute} from "vue-router";
 import {onMounted, ref} from "vue";
 import DetailHot from "@/views/Detail/components/DetailHot.vue";
+import {ElMessage} from "element-plus";
+import {useCartStore} from "@/stores/cartStore";
 
-const route=useRoute()
-const goods=ref({});
-const getDetail=async ()=>{
-  const res=await getDetailApi(route.params.id);
-  goods.value=res.result;
+const cartStore=useCartStore()
+const route = useRoute()
+const goods = ref({});
+const getDetail = async () => {
+  const res = await getDetailApi(route.params.id);
+  goods.value = res.result;
 }
-onMounted(()=>getDetail())
+onMounted(() => getDetail())
+let skuObj = {};
 //sku被点击时候
-const skuChange=(sku)=>{
-  console.log(sku)
+const skuChange = (sku) => {
+  skuObj=sku
+}
+//商品数量
+const count = ref(0);
+const countChange = (count) => {
+  count.value=count;
+}
+//添加购物车
+const addCart = () => {
+  if (skuObj.skuId) {
+    //规格已全部选择
+    cartStore.addCart({
+      id:goods.value.id,
+      name:goods.value.name,
+      picture:goods.value.mainPictures[0],
+      price:goods.value.price,
+      count:count.value,
+      skuId:skuObj.skuId,
+      attrsText:skuObj.specsText,
+      selected:true
+    });
+    ElMessage.success('成功加入购物车');
+  }else {
+    //没有选全规格
+    ElMessage.warning('请选择规格')
+  }
 }
 </script>
 
 <template>
   <div class="xtx-goods-page">
-    <el-backtop :right="20" :bottom="20" />
+    <el-backtop :right="20" :bottom="20"/>
     <div class="container" v-if="goods.details">
       <div class="bread-container">
         <el-breadcrumb separator=">">
@@ -61,14 +90,14 @@ const skuChange=(sku)=>{
                 </li>
                 <li>
                   <p>品牌信息</p>
-                  <p>{{goods.brand.name}}</p>
+                  <p>{{ goods.brand.name }}</p>
                   <p><i class="iconfont icon-dynamic-filling"></i>品牌主页</p>
                 </li>
               </ul>
             </div>
             <div class="spec">
               <!-- 商品信息区 -->
-              <p class="g-name"> {{ goods.name}}</p>
+              <p class="g-name"> {{ goods.name }}</p>
               <p class="g-desc">{{ goods.desc }} </p>
               <p class="g-price">
                 <span>{{ goods.price }}</span>
@@ -92,10 +121,10 @@ const skuChange=(sku)=>{
               <!-- sku组件 -->
               <XtxSku :goods="goods" @change="skuChange"/>
               <!-- 数据组件 -->
-
+              <el-input-number v-model="count" :min="1" @change="countChange"/>
               <!-- 按钮组件 -->
               <div>
-                <el-button size="large" class="btn">
+                <el-button size="large" class="btn" @click="addCart">
                   加入购物车
                 </el-button>
               </div>
@@ -274,7 +303,7 @@ const skuChange=(sku)=>{
       flex: 1;
       position: relative;
 
-      ~li::after {
+      ~ li::after {
         position: absolute;
         top: 10px;
         left: 0;
@@ -328,7 +357,7 @@ const skuChange=(sku)=>{
       font-size: 18px;
       position: relative;
 
-      >span {
+      > span {
         color: $priceColor;
         font-size: 16px;
         margin-left: 10px;
@@ -362,7 +391,7 @@ const skuChange=(sku)=>{
     }
   }
 
-  >img {
+  > img {
     width: 100%;
   }
 }
