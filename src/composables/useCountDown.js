@@ -1,5 +1,6 @@
 // 封装倒计时逻辑函数
 import {computed, onUnmounted, ref} from 'vue'
+//需要安装npm i dayjs
 import dayjs from 'dayjs'
 
 export const useCountDown = () => {

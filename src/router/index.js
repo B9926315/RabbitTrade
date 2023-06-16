@@ -9,6 +9,9 @@ import CartList from '@/views/CartList/index.vue'
 import Checkout from '@/views/Checkout/index.vue'
 import Pay from '@/views/Pay/index.vue'
 import PayBack from "@/views/Pay/PayBack.vue";
+import Member from '@/views/Member/index.vue'
+import UserInfo from "@/views/Member/components/UserInfo.vue";
+import UserOrder from "@/views/Member/components/UserOrder.vue";
 
 const router = createRouter({
     history: createWebHistory(
@@ -33,24 +36,39 @@ const router = createRouter({
         }, {
             path: 'detail/:id',
             component: Detail,
-            name:'商品详情'
-        },{
-            path:'cartlist',
-            component:CartList,
-            name:'购物车'
-        },{
-            path:'checkout',
-            component:Checkout,
-            name:'结算页面'
-        },{
-            path:'pay',
-            component:Pay,
-            name:'支付页面'
-        },{
+            name: '商品详情'
+        }, {
+            path: 'cartlist',
+            component: CartList,
+            name: '购物车'
+        }, {
+            path: 'checkout',
+            component: Checkout,
+            name: '结算页面'
+        }, {
+            path: 'pay',
+            component: Pay,
+            name: '支付页面'
+        }, {
             path: 'paycallback', // 注意路径，必须是paycallback
             component: PayBack,
-            name:'支付结果回显'
-        },
+            name: '支付结果回显'
+        }, {
+            path: '/member',
+            component: Member,
+            name: '个人中心',
+            children: [
+                {
+                    path: '',
+                    component: UserInfo,
+                    name: '个人中心详情页'
+                }, {
+                    path:'order',
+                    component:UserOrder,
+                    name:'个人订单页'
+                }
+            ]
+        }
         ]
     }, {
         path: '/login',

@@ -10,3 +10,12 @@ export const loginApi=({account,password})=>{
         }
     })
 }
+//个人中心页面的推荐列表
+export const getLikeListAPI = ({ limit = 4 }) => {
+    return httpInstance({
+        url:'/goods/relevant',
+        params: {
+            limit
+        }
+    })
+}
